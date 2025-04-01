@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería Multilenguaje</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            height: 100vh;
+        }
+        #left-panel {
+            width: 30%;
+            background-image: url('images/bg-es.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+        }
+        #right-panel {
+            width: 70%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-auto-rows: 100px;
+            gap: 5px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .gallery-item {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: transform 0.3s ease-in-out;
+        }
+        .gallery-item:hover {
+            transform: scale(1.1);
+        }
+        .gallery-item:last-child {
+            grid-row: span 2;
+            height: 200px;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+        }
+        .overlay img {
+            max-width: 80%;
+            max-height: 60%;
+        }
+        .overlay a, .overlay button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="left-panel">
+        <select id="language" onchange="changeLanguage()">
+            <option value="es" selected>Español</option>
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+        </select>
+    </div>
+    <div id="right-panel"></div>
+    
+    <div id="overlay" class="overlay">
+        <img id="overlay-img" src="">
+        <p id="overlay-desc"></p>
+        <a id="overlay-link" href="#" target="_blank">Más información</a>
+        <button onclick="closeOverlay()">Cerrar</button>
+    </div>
+    
+    <script>
+        const images = Array.from({ length: 55 }, (_, i) => `images/img${i + 1}.jpg`);
+        let language = 'es';
+let descriptions = {
+    es: [
+        "Descripción personalizada de la imagen 1|https://ejemplo.com/es1",
+        "Descripción personalizada de la imagen 2|https://ejemplo.com/es2",
+        "Descripción personalizada de la imagen 3|https://ejemplo.com/es3",
+        "Descripción personalizada de la imagen 4|https://ejemplo.com/es4",
+        "Descripción personalizada de la imagen 5|https://ejemplo.com/es5",
+        "Descripción personalizada de la imagen 6|https://ejemplo.com/es6",
+        "Descripción personalizada de la imagen 7|https://ejemplo.com/es7",
+        "Descripción personalizada de la imagen 8|https://ejemplo.com/es8",
+        "Descripción personalizada de la imagen 9|https://ejemplo.com/es9",
+        "Descripción personalizada de la imagen 10|https://ejemplo.com/es10",
+        "Descripción personalizada de la imagen 11|https://ejemplo.com/es11",
+        "Descripción personalizada de la imagen 12|https://ejemplo.com/es12",
+        "Descripción personalizada de la imagen 13|https://ejemplo.com/es13",
+        "Descripción personalizada de la imagen 14|https://ejemplo.com/es14",
+        "Descripción personalizada de la imagen 15|https://ejemplo.com/es15",
+        "Descripción personalizada de la imagen 16|https://ejemplo.com/es16",
+        "Descripción personalizada de la imagen 17|https://ejemplo.com/es17",
+        "Descripción personalizada de la imagen 18|https://ejemplo.com/es18",
+        "Descripción personalizada de la imagen 19|https://ejemplo.com/es19",
+        "Descripción personalizada de la imagen 20|https://ejemplo.com/es20",
+        "Descripción personalizada de la imagen 21|https://ejemplo.com/es21",
+        "Descripción personalizada de la imagen 22|https://ejemplo.com/es22",
+        "Descripción personalizada de la imagen 23|https://ejemplo.com/es23",
+        "Descripción personalizada de la imagen 24|https://ejemplo.com/es24",
+        "Descripción personalizada de la imagen 25|https://ejemplo.com/es25",
+        "Descripción personalizada de la imagen 26|https://ejemplo.com/es26",
+        "Descripción personalizada de la imagen 27|https://ejemplo.com/es27",
+        "Descripción personalizada de la imagen 28|https://ejemplo.com/es28",
+        "Descripción personalizada de la imagen 29|https://ejemplo.com/es29",
+        "Descripción personalizada de la imagen 30|https://ejemplo.com/es30",
+        "Descripción personalizada de la imagen 31|https://ejemplo.com/es31",
+        "Descripción personalizada de la imagen 32|https://ejemplo.com/es32",
+        "Descripción personalizada de la imagen 33|https://ejemplo.com/es33",
+        "Descripción personalizada de la imagen 34|https://ejemplo.com/es34",
+        "Descripción personalizada de la imagen 35|https://ejemplo.com/es35",
+        "Descripción personalizada de la imagen 36|https://ejemplo.com/es36",
+        "Descripción personalizada de la imagen 37|https://ejemplo.com/es37",
+        "Descripción personalizada de la imagen 38|https://ejemplo.com/es38",
+        "Descripción personalizada de la imagen 39|https://ejemplo.com/es39",
+        "Descripción personalizada de la imagen 40|https://ejemplo.com/es40",
+        "Descripción personalizada de la imagen 41|https://ejemplo.com/es41",
+        "Descripción personalizada de la imagen 42|https://ejemplo.com/es42",
+        "Descripción personalizada de la imagen 43|https://ejemplo.com/es43",
+        "Descripción personalizada de la imagen 44|https://ejemplo.com/es44",
+        "Descripción personalizada de la imagen 45|https://ejemplo.com/es45",
+        "Descripción personalizada de la imagen 46|https://ejemplo.com/es46",
+        "Descripción personalizada de la imagen 47|https://ejemplo.com/es47",
+        "Descripción personalizada de la imagen 48|https://ejemplo.com/es48",
+        "Descripción personalizada de la imagen 49|https://ejemplo.com/es49",
+        "Descripción personalizada de la imagen 50|https://ejemplo.com/es50",
+        "Descripción personalizada de la imagen 51|https://ejemplo.com/es51",
+        "Descripción personalizada de la imagen 52|https://ejemplo.com/es52",
+        "Descripción personalizada de la imagen 53|https://ejemplo.com/es53",
+        "Descripción personalizada de la imagen 54|https://ejemplo.com/es54",
+        "Descripción personalizada de la imagen 55|https://ejemplo.com/es55",
+        // Continúa para cada imagen...
+    ],
+    fr: [
+        "Description personnalisée de l'image 1|https://ejemplo.com/fr1",
+        "Description personnalisée de l'image 2|https://ejemplo.com/fr2",
+        "Description personnalisée de l'image 3|https://ejemplo.com/fr3",
+        "Description personnalisée de l'image 4|https://ejemplo.com/fr4",
+        "Description personnalisée de l'image 5|https://ejemplo.com/fr5",
+        "Description personnalisée de l'image 6|https://ejemplo.com/fr6",
+        "Description personnalisée de l'image 7|https://ejemplo.com/fr7",
+        "Description personnalisée de l'image 8|https://ejemplo.com/fr8",
+        "Description personnalisée de l'image 9|https://ejemplo.com/fr9",
+        "Description personnalisée de l'image 10|https://ejemplo.com/fr10",
+        "Description personnalisée de l'image 11|https://ejemplo.com/fr11",
+        "Description personnalisée de l'image 12|https://ejemplo.com/fr12",
+        "Description personnalisée de l'image 13|https://ejemplo.com/fr13",
+        "Description personnalisée de l'image 14|https://ejemplo.com/fr14",
+        "Description personnalisée de l'image 15|https://ejemplo.com/fr15",
+        "Description personnalisée de l'image 16|https://ejemplo.com/fr16",
+        "Description personnalisée de l'image 17|https://ejemplo.com/fr17",
+        "Description personnalisée de l'image 18|https://ejemplo.com/fr18",
+        "Description personnalisée de l'image 19|https://ejemplo.com/fr19",
+        "Description personnalisée de l'image 20|https://ejemplo.com/fr20",
+        "Description personnalisée de l'image 21|https://ejemplo.com/fr21",
+        "Description personnalisée de l'image 22|https://ejemplo.com/fr22",
+        "Description personnalisée de l'image 23|https://ejemplo.com/fr23",
+        "Description personnalisée de l'image 24|https://ejemplo.com/fr24",
+        "Description personnalisée de l'image 25|https://ejemplo.com/fr25",
+        "Description personnalisée de l'image 26|https://ejemplo.com/fr26",
+        "Description personnalisée de l'image 27|https://ejemplo.com/fr27",
+        "Description personnalisée de l'image 28|https://ejemplo.com/fr28",
+        "Description personnalisée de l'image 29|https://ejemplo.com/fr29",
+        "Description personnalisée de l'image 30|https://ejemplo.com/fr30",
+        "Description personnalisée de l'image 31|https://ejemplo.com/fr31",
+        "Description personnalisée de l'image 32|https://ejemplo.com/fr32",
+        "Description personnalisée de l'image 33|https://ejemplo.com/fr33",
+        "Description personnalisée de l'image 34|https://ejemplo.com/fr34",
+        "Description personnalisée de l'image 35|https://ejemplo.com/fr35",
+        "Description personnalisée de l'image 36|https://ejemplo.com/fr36",
+        "Description personnalisée de l'image 37|https://ejemplo.com/fr37",
+        "Description personnalisée de l'image 38|https://ejemplo.com/fr38",
+        "Description personnalisée de l'image 39|https://ejemplo.com/fr39",
+        "Description personnalisée de l'image 40|https://ejemplo.com/fr40",
+        "Description personnalisée de l'image 41|https://ejemplo.com/fr41",
+        "Description personnalisée de l'image 42|https://ejemplo.com/fr42",
+        "Description personnalisée de l'image 43|https://ejemplo.com/fr43",
+        "Description personnalisée de l'image 44|https://ejemplo.com/fr44",
+        "Description personnalisée de l'image 45|https://ejemplo.com/fr45",
+        "Description personnalisée de l'image 46|https://ejemplo.com/fr46",
+        "Description personnalisée de l'image 47|https://ejemplo.com/fr47",
+        "Description personnalisée de l'image 48|https://ejemplo.com/fr48",
+        "Description personnalisée de l'image 49|https://ejemplo.com/fr49",
+        "Description personnalisée de l'image 50|https://ejemplo.com/fr50",
+        "Description personnalisée de l'image 51|https://ejemplo.com/fr51",
+        "Description personnalisée de l'image 52|https://ejemplo.com/fr52",
+        "Description personnalisée de l'image 53|https://ejemplo.com/fr53",
+        "Description personnalisée de l'image 54|https://ejemplo.com/fr54",
+        "Description personnalisée de l'image 55|https://ejemplo.com/fr55",
+
+        // Continúa para cada imagen...
+    ],
+    en: [
+        "Custom description for image 1|https://example.com/en1",
+        "Custom description for image 2|https://example.com/en2",
+        "Custom description for image 3|https://example.com/en3",
+        "Custom description for image 4|https://example.com/en4",
+        "Custom description for image 5|https://example.com/en5",
+        "Custom description for image 6|https://example.com/en6",
+        "Custom description for image 7 Dive into Cartagena’s heart on a group walking tour. Stroll through the old streets of the Walled City and Getsemani with a your guide and see the Clock Tower Monument, Santo Domingo Church, and more.|https://www.getyourguide.com/cartagena-l362/cartagena-walled-city-and-getsemani-shared-walking-tour-t419520/?ranking_uuid=0c3857f2-d569-444b-aea4-845f5e26ce62",
+        "Custom description for image 8|https://example.com/en8",
+        "Custom description for image 9|https://example.com/en9",
+        "Custom description for image 10|https://example.com/en10",
+        "Custom description for image 11|https://example.com/en11",
+        "Custom description for image 12|https://example.com/en12",
+        "Custom description for image 13|https://example.com/en13",
+        "Custom description for image 14|https://example.com/en14",
+        "Custom description for image 15|https://example.com/en15",
+        "Custom description for image 16|https://example.com/en16",
+        "Custom description for image 17|https://example.com/en17",
+        "Custom description for image 18|https://example.com/en18",
+        "Custom description for image 19|https://example.com/en19",
+        "Custom description for image 20|https://example.com/en20",
+        "Custom description for image 21|https://example.com/en21",
+        "Custom description for image 22|https://example.com/en22",
+        "Custom description for image 23|https://example.com/en23",
+        "Custom description for image 24|https://example.com/en24",
+        "Custom description for image 25|https://example.com/en25",
+        "Custom description for image 26|https://example.com/en26",
+        "Custom description for image 27|https://example.com/en27",
+        "Custom description for image 28|https://example.com/en28",
+        "Custom description for image 29|https://example.com/en29",
+        "Custom description for image 30|https://example.com/en30",
+        "Custom description for image 31|https://example.com/en31",
+        "Custom description for image 32|https://example.com/en32",
+        "Custom description for image 33|https://example.com/en33",
+        "Custom description for image 34|https://example.com/en34",
+        "Custom description for image 35|https://example.com/en35",
+        "Custom description for image 36|https://example.com/en36",
+        "Custom description for image 37|https://example.com/en37",
+        "Custom description for image 38|https://example.com/en38",
+        "Custom description for image 39|https://example.com/en39",
+        "Custom description for image 40|https://example.com/en40",
+        "Custom description for image 41|https://example.com/en41",
+        "Custom description for image 42|https://example.com/en42",
+        "Custom description for image 43|https://example.com/en43",
+        "Custom description for image 44|https://example.com/en44",
+        "Custom description for image 45|https://example.com/en45",
+        "Custom description for image 46|https://example.com/en46",
+        "Custom description for image 47|https://example.com/en47",
+        "Custom description for image 48|https://example.com/en48",
+        "Custom description for image 49|https://example.com/en49",
+        "Custom description for image 50|https://example.com/en50",
+        "Custom description for image 51|https://example.com/en51",
+        "Custom description for image 52|https://example.com/en52",
+        "Custom description for image 53|https://example.com/en53",
+        "Custom description for image 54|https://example.com/en54",
+        "Custom description for image 55|https://example.com/en55",
+
+        // Continúa para cada imagen...
+    ]
+};
+        
+        function changeLanguage() {
+            language = document.getElementById('language').value;
+            document.getElementById('left-panel').style.backgroundImage = `url('images/bg-${language}.jpg')`;
+        }
+        
+        function showOverlay(index) {
+            const overlay = document.getElementById('overlay');
+            document.getElementById('overlay-img').src = images[index];
+            const [desc, link] = descriptions[language][index].split('|');
+            document.getElementById('overlay-desc').textContent = desc;
+            document.getElementById('overlay-link').href = link;
+            overlay.style.display = 'flex';
+        }
+        
+        function closeOverlay() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+        
+        function createGallery() {
+            const gallery = document.getElementById('right-panel');
+            images.forEach((src, index) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'gallery-item';
+                img.onclick = () => showOverlay(index);
+                if (index === images.length - 1) {
+                    img.style.gridRow = 'span 2';
+                    img.style.height = '200px';
+                }
+                gallery.appendChild(img);
+            });
+        }
+        
+        createGallery();
+    </script>
+</body>
+</html>
